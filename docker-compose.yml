@@ -1,0 +1,46 @@
+version: "1.0"
+
+services:
+
+  mongo:
+    image: mongo
+    restart: always
+    container_name: mongo_db
+    ports:
+      - 27017:27017 
+    volumes:
+      - mongo:/data/db
+    networks: 
+      - node-react-network
+
+  app:
+    image: node_react_app:prod
+    build: 
+      context: .
+      target: prod
+    container_name: node_react_app
+    restart: always
+    volumes: 
+      - .:/app
+    ports:
+      - "5000:5000"
+      - "3000:3000"
+    depends_on:
+      - mongo_db
+    environment:
+      - MONGODB_URI=mongodb://mongo_db:27017
+    networks: 
+      - node-react-network
+      
+  dbseed:
+    image: dbseed
+    build:
+      context: .      
+    depends_on:
+      - mongo_db 
+    networks: 
+      - node-react-network       
+
+networks: 
+  node-react-network:
+    name: node-react-network

@@ -1,0 +1,1 @@
+mongoimport --collection collection1 --file data.json --jsonArray --uri "mongodb://mongo_db:27017"
